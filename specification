@@ -1,8 +1,8 @@
 VINE: Versioned Interoperable New Encoding
 
-Status of This Memo
-
+v0.0.1
 ---
+Status of This Memo
 This document describes the VINE serialization format. It is intended for prototyping. Distribution is unlimited.
 ---
 
@@ -33,7 +33,8 @@ Table of Contents
 
 1. Introduction
 
-VINE is a hybrid serialization system that unifies **row-oridented** encoding (for RPCs, events, small messages) and **column-oriented** encoding (for batch, analytics) under a single logical schema. It provides:
+VINE is a hybrid serialization system that unifies **row-oridented** encoding (for RPCs, events, small messages) and **column-oriented** encoding (for batch, analytics) under a single logical schema.
+It provides:
 - Deterministic canonical encoding (for signatures, content addressing)
 - Presevation and replay of unknown fields across schema evolution
 - Randon access and streaming mode (sync frames)
@@ -49,9 +50,33 @@ VINE is a hybrid serialization system that unifies **row-oridented** encoding (f
 - **UnknownSet**: Structured set of unknown fields preserved for re-serialization
 - **Canonical Serialization**: Re-emission of known + unknown fields in deterministic order
 
---
+---
 
+3. Overview of Goals and Non-Goals
 
+---
+
+4. Message Envelope
+
+All messages begin with a fixed-size header, followed by a sequence of chunks, and conclude with either a Table of Contents (TOC, file mode) or periodic Sync Frames (streaming mode).
+
++----------------+----------------+----------------+----------------+
+|  Magic "V1NE"  |   Version (1B) |   Flags (1B)   |  Reserved (2B) |
++----------------+----------------+----------------+----------------+
+|                           ShapeID-64 (8B)                         |
++-------------------------------------------------------------------+
+|                           TOC Offset (8B)                         |
++---------------------------------+---------------------------------+
+|         Chunk Count (4B)        |        Header CRC32C (4B)       |
++---------------------------------+---------------------------------+
+
+- **Magic**: 4 bytes = ASCII `V1NE`
+- **Version**: single byte, current `0x01`
+- **Flags**: mode bits (row/col, capsule, stream/file)
+- **ShapeID**: 64-bit truncated digest
+- **TOC Offset**: absolute offset to TOC (file mode). Zero if streaming
+- **Chunk Count**: number of chunks in message
+- **CRC32C**: checksum of first 28 bytes of header
 
 
 
