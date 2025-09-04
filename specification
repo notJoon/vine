@@ -1,0 +1,57 @@
+VINE: Versioned Interoperable New Encoding
+
+Status of This Memo
+
+---
+This document describes the VINE serialization format. It is intended for prototyping. Distribution is unlimited.
+---
+
+Table of Contents
+
+1. Introduction
+2. Terminology
+3. Overview of Goals and Non-Goals
+4. Message Envelope
+5. Header Layout
+6. Type System and Wire Types
+7. Canonicalization and Unknown Field handling
+8. Schema Identification (ShapedID, SchemaDigest)
+9. Timestamps and Temporal Semantics
+10. String Keys and Canonical Comparison
+11. RowWire and ColWire Containers
+12. OpaqueExtension Columns
+13. Variable Integer Encoding (BOPV)
+14. Streaming vs File Mode
+15. Integrity and Signature Layers
+16. Decimal and Numeric Semantics
+17. UUIDs, Floats, Special Values
+18. Resource Limits and Error Handling
+19. Conformance Tests
+20. Considerations
+
+---
+
+1. Introduction
+
+VINE is a hybrid serialization system that unifies **row-oridented** encoding (for RPCs, events, small messages) and **column-oriented** encoding (for batch, analytics) under a single logical schema. It provides:
+- Deterministic canonical encoding (for signatures, content addressing)
+- Presevation and replay of unknown fields across schema evolution
+- Randon access and streaming mode (sync frames)
+- A type system with temporal, decimal, and unifications
+
+---
+
+2. Terminology
+- **RowWire**: Row-oriented encoding
+- **ColWire**: column-oriented encoding
+- **ShapeID**: 64-bit schema identifier for negotiation and cache
+- **SchemaDigest**: 128-bit digest for collision-resistant idenfication
+- **UnknownSet**: Structured set of unknown fields preserved for re-serialization
+- **Canonical Serialization**: Re-emission of known + unknown fields in deterministic order
+
+--
+
+
+
+
+
